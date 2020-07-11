@@ -22,7 +22,7 @@ export default class SBankenClient {
     })
   }
 
-  async getBearerToken (): Promise<SBanken.TokenData> {
+  async getToken (): Promise<SBanken.TokenData> {
     if (this.tokenData?.expires !== undefined && this.tokenData.expires > Date.now()) {
       return this.tokenData
     }
@@ -53,7 +53,9 @@ export default class SBankenClient {
   }
 
   private async updateClientToken (): Promise<void> {
-    this.client.defaults.headers.common.Authorization = await this.getBearerToken()
+    const tokenData = await this.getToken()
+    const bearerToken = `${tokenData.token_type} ${tokenData.access_token}`
+    this.client.defaults.headers.common.Authorization = bearerToken
   }
 
   async getAccounts (accountId?: SBanken.AccountID): Promise<SBanken.APIAccounts> {
