@@ -59,10 +59,17 @@ export default class SBankenClient {
     this.client.defaults.headers.common.Authorization = bearerToken
   }
 
-  async getAccounts (accountId?: SBanken.AccountID): Promise<SBanken.APIAccounts> {
+  async getAccounts (): Promise<SBanken.APIAccounts> {
+    await this.updateClientToken()
+    const { data } = await this.client.get('/exec.bank/api/v1/accounts')
+
+    return data as SBanken.APIAccounts
+  }
+
+  async getAccount (accountId?: SBanken.AccountID): Promise<SBanken.APIAccount> {
     await this.updateClientToken()
     const { data } = await this.client.get(`/exec.bank/api/v1/accounts/${accountId !== undefined ? accountId : ''}`)
 
-    return data as SBanken.APIAccounts
+    return data as SBanken.APIAccount
   }
 }
