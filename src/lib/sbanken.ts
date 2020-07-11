@@ -13,10 +13,6 @@ export default class SBankenClient {
 
     this.client = axios.create({
       baseURL: options.baseUrlApi || config.baseUrlApi,
-      auth: {
-        username: options.applicationId,
-        password: options.applicationSecret
-      },
       headers: {
         customerId: options.customerId
       }
@@ -25,9 +21,11 @@ export default class SBankenClient {
 
   async getBearerToken () {
     if (this.tokenData && this.tokenData.expires && this.tokenData.expires > Date.now()) {
+      console.log('Using existing token!')
       const token = `${this.tokenData.token_type} ${this.tokenData.access_token}`
       return token
     }
+    console.log('Getting new token!')
 
     const baseUrlAuth = this.options.baseUrlAuth || config.baseUrlAuth
     const data = toUrlEncodedFormData({ grant_type: 'client_credentials' })
@@ -51,15 +49,13 @@ export default class SBankenClient {
   }
 
   private async updateClientToken () {
-    this.client.defaults.headers.Authorization = await this.getBearerToken()
+    this.client.defaults.headers.common.Authorization = await this.getBearerToken()
   }
 
   async getAccounts (accountId?: SBanken.AccountID) {
-    console.log(this.client.defaults.headers)
     await this.updateClientToken()
-    console.log(this.client.defaults.headers)
+    const { data } = await this.client.get(`/exec.bank/api/v1/accounts/${accountId ? accountId : ''}`)
 
-    const { data } = await this.client.get('/exec.bank/api/v1/accounts/' + accountId)
     return data as SBanken.APIAccounts
   }
 }
