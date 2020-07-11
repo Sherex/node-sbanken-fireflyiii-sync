@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 import { config } from './load-config'
-import * as SBanken from './types'
+import * as SBanken from './sbanken.types'
 import toUrlEncodedFormData from './to-url-encoded-form-data'
 
 export default class SBankenClient {
