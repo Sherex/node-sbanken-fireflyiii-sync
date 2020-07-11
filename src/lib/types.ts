@@ -17,35 +17,35 @@ export namespace SBanken {
     expires?: number,
     token_type: string,
     scope: [
-      "Exec.Bank.Accounts.read_access",
-      "Exec.Bank.Cards.read_access",
-      "Exec.Bank.EFakturas.full_access",
-      "Exec.Bank.Payments.read_access",
-      "Exec.Bank.StandingOrders.read_access",
-      "Exec.Bank.Transactions.read_access",
-      "Exec.Bank.Transfers.full_access",
-      "Exec.Customers.Customers.read_access"
+      'Exec.Bank.Accounts.read_access',
+      'Exec.Bank.Cards.read_access',
+      'Exec.Bank.EFakturas.full_access',
+      'Exec.Bank.Payments.read_access',
+      'Exec.Bank.StandingOrders.read_access',
+      'Exec.Bank.Transactions.read_access',
+      'Exec.Bank.Transfers.full_access',
+      'Exec.Customers.Customers.read_access'
     ]
   }
 
   export interface APIAccounts {
-    availableItems: number;
-    items: Account[];
-    errorType?: string;
-    isError: boolean;
-    errorCode?: number;
-    errorMessage?: string;
-    traceId?: string;
+    availableItems: number
+    items: Account[]
+    errorType?: string
+    isError: boolean
+    errorCode?: number
+    errorMessage?: string
+    traceId?: string
   }
-  
+
   export interface APIAccount {
-    accountId: string;
-    accountNumber: string;
-    ownerCustomerId: string;
-    name: string;
-    accountType: string;
-    available: number;
-    balance: number;
-    creditLimit: number;
+    accountId: string
+    accountNumber: string
+    ownerCustomerId: string
+    name: string
+    accountType: string
+    available: number
+    balance: number
+    creditLimit: number
   }
 }

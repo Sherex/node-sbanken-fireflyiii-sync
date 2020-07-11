@@ -21,7 +21,7 @@ export {
   config
 }
 
-function env(env: string, defaultValue?: string) {
+function env (env: string, defaultValue?: string) {
   const value = process.env[env]
   if (typeof value === 'string') return value
   if (typeof defaultValue === 'string') return defaultValue

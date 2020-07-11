@@ -44,7 +44,7 @@ export default class SBankenClient {
     this.tokenData.scope = response.data.scope.split(' ')
 
     if (!this.tokenData.token_type.match(/bearer/i)) throw Error(`Received unknown token from API: "${this.tokenData.token_type}"`)
-  
+
     return `${this.tokenData.token_type} ${this.tokenData.access_token}`
   }
 
