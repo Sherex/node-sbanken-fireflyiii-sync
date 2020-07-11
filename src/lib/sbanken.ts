@@ -42,19 +42,20 @@ export default class SBankenClient {
 
     const expiresBuffer = 30 // seconds
     this.tokenData = {
-      ...tokenResponse,
+      accessToken: tokenResponse.access_token,
+      tokenType: tokenResponse.token_type,
       expires: Date.now() + (tokenResponse.expires_in - expiresBuffer),
       scopes: response.data.scope.split(' ')
     }
 
-    if (this.tokenData.token_type.match(/bearer/i) === null) throw Error(`Received unknown token from API: "${this.tokenData.token_type}"`)
+    if (this.tokenData.tokenType.match(/bearer/i) === null) throw Error(`Received unknown token from API: "${this.tokenData.tokenType}"`)
 
     return this.tokenData
   }
 
   private async updateClientToken (): Promise<void> {
     const tokenData = await this.getToken()
-    const bearerToken = `${tokenData.token_type} ${tokenData.access_token}`
+    const bearerToken = `${tokenData.tokenType} ${tokenData.accessToken}`
     this.client.defaults.headers.common.Authorization = bearerToken
   }
 

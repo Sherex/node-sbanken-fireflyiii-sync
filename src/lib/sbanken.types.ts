@@ -29,7 +29,9 @@ export interface TokenAPIResponse {
   scope: string
 }
 
-export interface TokenData extends TokenAPIResponse {
+export interface TokenData {
+  accessToken: string
+  tokenType: string
   expires: number
   scopes: [
     'Exec.Bank.Accounts.read_access',
