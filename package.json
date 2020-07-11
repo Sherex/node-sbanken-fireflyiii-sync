@@ -1,0 +1,33 @@
+{
+  "name": "node-sbanken-fireflyiii-sync",
+  "version": "0.1.0",
+  "description": "Syncs accounts and transactions from SBanken to firefly-iii",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "dev": "ts-node-dev --no-notify src/index.ts",
+    "dev-watch": "ts-node-dev --respawn --no-notify src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sbanken",
+    "firefly",
+    "firefly3",
+    "firefly 3",
+    "fireflyiii",
+    "firefly-iii",
+    "sync"
+  ],
+  "author": "Ingar Helgesen (https://github.com/sherex)",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^14.0.22",
+    "ts-node-dev": "^1.0.0-pre.50",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0"
+  }
+}
