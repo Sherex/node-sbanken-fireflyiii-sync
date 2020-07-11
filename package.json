@@ -7,8 +7,8 @@
     "start": "tsc && node dist/index.js",
     "dev": "ts-node-dev --no-notify src/index.ts",
     "dev-watch": "ts-node-dev --respawn --no-notify src/index.ts",
-    "lint": "tslint --project ./",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint src/",
+    "test": "npm run lint"
   },
   "keywords": [
     "sbanken",
@@ -23,9 +23,14 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^14.0.22",
+    "@typescript-eslint/eslint-plugin": "^3.6.0",
+    "eslint": "^7.4.0",
+    "eslint-config-standard-with-typescript": "^18.0.2",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "ts-node-dev": "^1.0.0-pre.50",
-    "tslint": "^5.12.1",
-    "tslint-config-standard": "^9.0.0",
     "typescript": "^3.3.3"
   },
   "dependencies": {
