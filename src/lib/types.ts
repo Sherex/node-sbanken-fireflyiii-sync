@@ -45,7 +45,7 @@ export interface TokenData extends TokenAPIResponse {
 
 export interface APIAccounts {
   availableItems: number
-  items: Account[]
+  items: APIAccount[]
   errorType?: string
   isError: boolean
   errorCode?: number
