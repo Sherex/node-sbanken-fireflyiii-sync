@@ -8,6 +8,7 @@
     "dev": "ts-node-dev --no-notify src/index.ts",
     "dev-watch": "ts-node-dev --respawn --no-notify src/index.ts",
     "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/",
     "test": "npm run lint"
   },
   "keywords": [
