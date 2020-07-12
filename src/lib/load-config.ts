@@ -17,8 +17,15 @@ const sbanken = {
   customerId: env('SB_CUSTOMER_ID')
 }
 
+const firefly = {
+  clientId: env('FF_CLIENT_ID'),
+  clientSecret: env('FF_CLIENT_SECRET'),
+  baseUrl: env('FF_BASE_URL')
+}
+
 export {
-  sbanken
+  sbanken,
+  firefly
 }
 
 function env (env: string, defaultValue?: string): string {
