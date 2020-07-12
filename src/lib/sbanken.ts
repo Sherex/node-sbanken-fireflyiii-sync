@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { config } from './load-config'
+import { sbanken } from './load-config'
 import * as SBanken from './sbanken.types'
 import toUrlEncodedFormData from './to-url-encoded-form-data'
 
@@ -9,13 +9,13 @@ export default class SBankenClient {
   private tokenData: SBanken.TokenData | undefined
 
   constructor (options: SBanken.ClientParamOptions) {
-    if (typeof options.baseUrlApi !== 'string') options.baseUrlApi = config.baseUrlApi
-    if (typeof options.baseUrlAuth !== 'string') options.baseUrlAuth = config.baseUrlAuth
+    if (typeof options.baseUrlApi !== 'string') options.baseUrlApi = sbanken.baseUrlApi
+    if (typeof options.baseUrlAuth !== 'string') options.baseUrlAuth = sbanken.baseUrlAuth
     if (!SBanken.isClientOptionsData(options)) throw Error('Wrong options received from config')
     this.options = options
 
     this.client = axios.create({
-      baseURL: typeof options.baseUrlApi !== 'undefined' ? options.baseUrlApi : config.baseUrlApi,
+      baseURL: typeof options.baseUrlApi !== 'undefined' ? options.baseUrlApi : sbanken.baseUrlApi,
       headers: {
         customerId: options.customerId
       }

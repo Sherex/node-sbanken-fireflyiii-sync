@@ -9,7 +9,7 @@ dotenv.config()
  * @prop {string} applicationSecret   - Application secret received from https://sbanken.no/bruke/utviklerportalen/
  * @prop {string} customerId          - Your norwegian "personnummer" (11 digits) https://en.wikipedia.org/wiki/National_identification_number#Norway
  */
-const config = {
+const sbanken = {
   baseUrlApi: env('SB_BASE_URL_API', 'https://api.sbanken.no'),
   baseUrlAuth: env('SB_BASE_URL_AUTH', 'https://auth.sbanken.no'),
   applicationId: env('SB_APPLICATION_ID'),
@@ -18,7 +18,7 @@ const config = {
 }
 
 export {
-  config
+  sbanken
 }
 
 function env (env: string, defaultValue?: string): string {
