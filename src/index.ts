@@ -8,12 +8,9 @@ import { FireflyClient } from './lib/firefly'
 
   const firefly = new FireflyClient({
     baseUrl: config.firefly.baseUrl,
-    auth: {
-      clientId: config.firefly.clientId,
-      clientSecret: config.firefly.clientSecret,
-      redirectUri: config.firefly.clientCallback
-    }
+    token: config.firefly.token
   })
 
-  await firefly.authenticate()
+  const data = await firefly.getUser()
+  console.log(data.attributes)
 })().catch(console.error)
