@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+    firefly:
+        container_name: firefly
+        image: 'jc5x/firefly-iii:latest'
+        env_file: .env
+        volumes:
+            - './volumes/export:/var/www/firefly-iii/storage/export'
+            - './volumes/upload:/var/www/firefly-iii/storage/upload'
+            - './volumes/db:/var/www/firefly-iii/storage/database'
+        ports:
+            - '8085:8080'
+        restart: unless-stopped
