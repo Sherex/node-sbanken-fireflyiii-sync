@@ -1,5 +1,5 @@
 import { firefly } from './load-config'
-import ClientOAuth2 from "client-oauth2"
+import ClientOAuth2 from 'client-oauth2'
 import readline from 'readline'
 
 const cli = readline.createInterface({
