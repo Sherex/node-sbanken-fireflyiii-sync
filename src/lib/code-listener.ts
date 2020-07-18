@@ -1,12 +1,8 @@
 import http from 'http'
 import { parse } from 'querystring'
 
-interface listenForCodeReturn {
-  getCode: () => Promise<string>
-}
-
-export function listenForCode (port: number = 8123): listenForCodeReturn {
-  const code = new Promise<string>((resolve, reject) => {
+export async function listenForCode (port: number = 8123): Promise<string> {
+  return await new Promise<string>((resolve, reject) => {
     const server = http.createServer((req, res) => {
       if (typeof req.url !== 'string') {
         res.end('Invalid request')
@@ -33,10 +29,6 @@ export function listenForCode (port: number = 8123): listenForCodeReturn {
 
     server.listen(port)
   })
-
-  return {
-    getCode: async () => await code
-  }
 }
 
 const responseOk = `

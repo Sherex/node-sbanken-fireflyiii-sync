@@ -20,6 +20,7 @@ const sbanken = {
 const firefly = {
   clientId: env('FF_CLIENT_ID'),
   clientSecret: env('FF_CLIENT_SECRET'),
+  clientCallback: env('FF_CLIENT_CALLBACK', 'http://localhost:8123'),
   baseUrl: env('FF_BASE_URL')
 }
 
