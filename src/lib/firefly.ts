@@ -1,4 +1,3 @@
-import { listenForCode } from './code-listener'
 import { components } from '../types/firefly-api'
 import axios, { AxiosInstance } from 'axios'
 
