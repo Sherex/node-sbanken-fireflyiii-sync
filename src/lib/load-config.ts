@@ -22,9 +22,15 @@ const firefly = {
   baseUrl: env('FF_BASE_URL')
 }
 
+const settings = {
+  accounts: env('SYNC_ACCOUNTS', ''),
+  createCurrency: env('SYNC_CREATE_CURRENCY', 'true')
+}
+
 export {
   sbanken,
-  firefly
+  firefly,
+  settings
 }
 
 function env (env: string, defaultValue?: string): string {
