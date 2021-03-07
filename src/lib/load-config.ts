@@ -23,7 +23,7 @@ const firefly = {
 }
 
 const settings = {
-  accounts: env('SYNC_ACCOUNTS', ''),
+  accounts: env('SYNC_ACCOUNTS', '').split(',').map(account => account.trim()),
   createCurrency: env('SYNC_CREATE_CURRENCY', 'true')
 }
 

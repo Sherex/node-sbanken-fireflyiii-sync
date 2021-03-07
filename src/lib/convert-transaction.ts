@@ -2,31 +2,35 @@ import { Transaction } from '@sherex/sbanken'
 import { TransactionCreate } from '../types'
 
 export function convertTransaction (sbankenTransaction: Transaction, accountId: number): TransactionCreate | null {
+  if (sbankenTransaction.isReservation === true) return null
   if (typeof sbankenTransaction.accountingDate !== 'string') return null
   if (typeof sbankenTransaction.text !== 'string') return null
   if (typeof sbankenTransaction.amount !== 'number') return null
 
+  const isDeposit = sbankenTransaction.amount > 0
+
   const transaction: TransactionCreate['transactions'][0] = {
-    type: sbankenTransaction.amount < 0 ? 'withdrawal' : 'deposit', // TODO: Check if transfer
+    type: isDeposit ? 'deposit' : 'withdrawal', // TODO: Check if transfer
     date: sbankenTransaction.accountingDate,
     description: sbankenTransaction.text,
-    source_id: accountId,
+    source_id: isDeposit ? null : accountId,
     destination_name: sbankenTransaction.text,
-    destination_id: null,
-    amount: sbankenTransaction.amount.toString().replace(/[+-]/, '')
+    destination_id: isDeposit ? accountId : null,
+    amount: sbankenTransaction.amount.toString().replace(/[+-]/, ''),
+    external_id: sbankenTransaction.cardDetails?.transactionId
   }
 
   // TODO: Fix
   if (typeof sbankenTransaction.cardDetails?.merchantName === 'string') {
     transaction.destination_name = sbankenTransaction.cardDetails.merchantName
   } else if (sbankenTransaction.transactionTypeText === 'StraksOvf') {
-    console.log(sbankenTransaction.text.replace(/Til: /i, 'Vipps til: '))
-    transaction.destination_name = sbankenTransaction.text.replace(/Til: /i, 'Vipps til: ')
+    transaction.destination_name = sbankenTransaction.text.replace(/(Til|Fra): /i, 'Vipps: ')
   } else {
     transaction.destination_name = textToDestAccount(sbankenTransaction.text)
   }
 
   return {
+    error_if_duplicate_hash: true,
     transactions: [
       transaction
     ]
