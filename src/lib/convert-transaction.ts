@@ -13,8 +13,9 @@ export function convertTransaction (sbankenTransaction: Transaction, accountId: 
     type: isDeposit ? 'deposit' : 'withdrawal', // TODO: Check if transfer
     date: sbankenTransaction.accountingDate,
     description: sbankenTransaction.text,
+    category_name: sbankenTransaction.cardDetails?.merchantCategoryDescription ?? undefined,
     source_id: isDeposit ? null : accountId,
-    destination_name: sbankenTransaction.text,
+    destination_name: 'Common',
     destination_id: isDeposit ? accountId : null,
     amount: sbankenTransaction.amount.toString().replace(/[+-]/, ''),
     external_id: sbankenTransaction.cardDetails?.transactionId
@@ -26,7 +27,7 @@ export function convertTransaction (sbankenTransaction: Transaction, accountId: 
   } else if (sbankenTransaction.transactionTypeText === 'StraksOvf') {
     transaction.destination_name = sbankenTransaction.text.replace(/(Til|Fra): /i, 'Vipps: ')
   } else {
-    transaction.destination_name = textToDestAccount(sbankenTransaction.text)
+    transaction.destination_name = textToDestAccount(sbankenTransaction.text) ?? 'Common'
   }
 
   return {
@@ -37,7 +38,7 @@ export function convertTransaction (sbankenTransaction: Transaction, accountId: 
   }
 }
 
-function textToDestAccount (text: string): string {
+function textToDestAccount (text: string): string | null {
   const regexes = [
     /^PAYPAL \*(?<text>.+)/, // Paypal
     /GOOGLE \*(?<text>.+)/ // Google play
@@ -45,8 +46,8 @@ function textToDestAccount (text: string): string {
   const results = regexes
     .map(regex => text.match(regex))
     .filter(match => match !== null)
-  if (results.length === 0) return text
-  if (results[0] === null || typeof results[0].groups?.text !== 'string') return text
+  if (results.length === 0) return null
+  if (results[0] === null || typeof results[0].groups?.text !== 'string') return null
   const match = results[0].groups.text
 
   if (results.length > 1) console.warn(`Multiple regexes matched, using first match "${text}" -> "${match}"`)

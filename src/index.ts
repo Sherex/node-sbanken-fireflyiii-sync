@@ -1,5 +1,6 @@
 import { SBanken, Transaction } from '@sherex/sbanken'
 import * as config from './lib/load-config'
+import { getAllTransactions } from './lib/get-transactions'
 import { FireflyClient, TransactionCreate } from './lib/firefly'
 import { convertTransaction } from './lib/convert-transaction'
 
@@ -32,7 +33,7 @@ const shouldSyncAccount = (accountNumber: string): boolean => accountsToSync.len
   }
 
   const accounts = await sbanken.getAccounts()
-  const existingAccounts = await firefly.getAccounts()
+  const existingAccounts = await firefly.getAccounts() // TODO: Paging on more than 50 accounts
   const existingNumbers = existingAccounts.map(account => account.attributes.account_number)
 
   console.log(`SBanken accounts: ${accounts.length}\nFirefly accounts: ${existingAccounts.length}\nExisting accounts: ${existingNumbers.length}\n`)
@@ -40,21 +41,25 @@ const shouldSyncAccount = (accountNumber: string): boolean => accountsToSync.len
   for await (const account of accounts) {
     // console.log(account)
     if (typeof account.accountNumber !== 'string' || !shouldSyncAccount(account.accountNumber)) return
+    if (typeof account.accountId !== 'string') return
+
+    const transactions: Transaction[] = await getAllTransactions(sbanken, account.accountId)
 
     if (!existingNumbers.includes(account.accountNumber)) {
       try {
         if (typeof account.name !== 'string') return
         if (typeof account.accountNumber !== 'string') return
-        if (typeof account.balance !== 'number') return
 
-        console.log(`Creating account: ${account.name}`)
-        const currentDate = new Date().toISOString().split('T')[0]
+        const firstTransaction = transactions[transactions.length - 1]
+        const openingDate = firstTransaction.accountingDate
+
+        console.log(`Creating account: ${account.name} - ${openingDate ?? 'unknown date'}`)
         const createdAccount = await firefly.createAccount({
           name: account.name,
           type: 'asset',
           account_number: account.accountNumber,
-          opening_balance: account.balance, // TODO: Get opening balance and date from config
-          opening_balance_date: currentDate,
+          opening_balance: 0,
+          opening_balance_date: openingDate,
           account_role: 'defaultAsset',
           currency_code: 'NOK'
         })
@@ -62,31 +67,11 @@ const shouldSyncAccount = (accountNumber: string): boolean => accountsToSync.len
       } catch (error) {
         console.error(error.response.data)
         console.log(`Couldn't create account "${account.name ?? 'unknown'}"! Skipping..`)
-        return
       }
     }
 
     const fireflyAccount = (await firefly.getAccounts()).find(ffAccount => ffAccount.attributes.account_number === account.accountNumber)
     if (fireflyAccount === undefined) throw new Error('Couldn\'t find Firefly account')
-
-    if (typeof account.accountId !== 'string') return
-
-    const transactions: Transaction[] = []
-    const pageSize = 1000
-    let currentIndex = 0
-    while (true) {
-      console.log(`Getting index: ${currentIndex}`)
-      const page = await sbanken.getTransactions(account.accountId, {
-        startDate: '2020-03-07', // TODO: Get start date from somewhere, config? Opening balance and opening date?
-        length: String(pageSize),
-        index: String(currentIndex)
-      })
-      currentIndex += page.length
-      console.log(`Transactions on page: ${page.length}`)
-
-      transactions.push(...page)
-      if (page.length < pageSize) break
-    }
 
     const formattedTransactions = transactions
       .map(transaction => convertTransaction(transaction, parseInt(fireflyAccount.id)))
@@ -106,6 +91,7 @@ const shouldSyncAccount = (accountNumber: string): boolean => accountsToSync.len
         index++
       }
     }
+    console.log(`\nDone! Created ${index} transactions`)
   }
 })().catch(error => {
   if (typeof error.response?.data !== 'undefined') console.error(error.response.data)
